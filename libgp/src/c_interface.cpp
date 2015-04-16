@@ -25,7 +25,7 @@ extern "C"
     
 void test()
 {
-    cout << "Hello World!" << endl;
+    cout << "Hello World! 2" << endl;
 }
 
 double add(double a, double b)
