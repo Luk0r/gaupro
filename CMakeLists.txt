@@ -1,0 +1,30 @@
+# Created by Manuel Blum on 2011-05-25.
+# Copyright 2013 University of Freiburg.
+
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+
+PROJECT(gaupro CXX C)
+
+# if no option is given, standard is release
+IF(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
+   SET(CMAKE_BUILD_TYPE Release)
+ENDIF(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
+
+set(CMAKE_CXX_FLAGS_RELEASE "-DCLSQUARE -Wall -O2 -fPIC -std=c++11")
+set(CMAKE_CXX_FLAGS_DEBUG "-DCLSQUARE -Wall -g -fPIC -std=c++11")
+
+SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_MODULE_PATH})
+
+FIND_PACKAGE(Eigen3 3.0.1 REQUIRED)
+
+# ----- Add include directories -----
+INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(libgp/include)
+INCLUDE_DIRECTORIES(optimizer/src)
+
+# ----- Add sources -----
+INCLUDE("Sources.cmake")
+
+# ----- Add library target -----
+ADD_LIBRARY(gaupro SHARED ${LIBGP_SRC} ${LIBGP_HEADERS} ${OPTIMIZER})
+

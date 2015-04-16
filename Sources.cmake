@@ -1,0 +1,62 @@
+SET(LIBGP_SRC
+  libgp/src/cov.cc
+  libgp/src/cov_factory.cc
+  libgp/src/cov_linear_ard.cc
+  libgp/src/cov_linear_one.cc
+  libgp/src/cov_matern3_iso.cc
+  libgp/src/cov_matern5_iso.cc
+  libgp/src/cov_noise.cc
+  libgp/src/cov_rq_iso.cc
+  libgp/src/cov_periodic_matern3_iso.cc
+  libgp/src/cov_periodic.cc
+  libgp/src/cov_se_ard.cc
+  libgp/src/cov_se_iso.cc
+  libgp/src/cov_sum.cc
+  libgp/src/cov_prod.cc
+  libgp/src/gp.cc
+  libgp/src/gp_utils.cc
+  libgp/src/sampleset.cc
+  libgp/src/rprop.cc
+  libgp/src/input_dim_filter.cc
+  libgp/src/cg.cc
+  libgp/src/solver.cpp
+  libgp/src/c_interface.cpp
+)
+
+SET(LIBGP_HEADERS 
+  libgp/include/cov.h
+  libgp/include/cov_factory.h
+  libgp/include/cov_linear_ard.h
+  libgp/include/cov_linear_one.h
+  libgp/include/cov_matern3_iso.h
+  libgp/include/cov_matern5_iso.h
+  libgp/include/cov_noise.h
+  libgp/include/cov_rq_iso.h
+  libgp/include/cov_periodic_matern3_iso.h
+  libgp/include/cov_periodic.h
+  libgp/include/cov_se_ard.h
+  libgp/include/cov_se_iso.h
+  libgp/include/cov_sum.h
+  libgp/include/cov_prod.h
+  libgp/include/gp.h
+  libgp/include/gp_utils.h
+  libgp/include/sampleset.h
+  libgp/include/rprop.h
+  libgp/include/input_dim_filter.h
+  libgp/include/cg.h
+  libgp/include/solver.hpp
+)
+
+SET(OPTIMIZER
+    optimizer/src/BfgsSolver.cpp
+    optimizer/src/ConjugateGradientSolver.cpp
+    optimizer/src/GradientDescentSolver.cpp
+    optimizer/src/ISolver.cpp
+    optimizer/src/LbfgsbSolver.cpp
+    optimizer/src/LbfgsSolver.cpp
+    optimizer/src/Meta.cpp
+    optimizer/src/NewtonDescentSolver.cpp
+    optimizer/src/Rprop.cpp
+    optimizer/src/Irpropplus.cpp
+    optimizer/src/Irpropminus.cpp
+)
