@@ -27,6 +27,7 @@ namespace libgp
   {
     assert(p.size() == loghyper.size());
     loghyper = p;
+	check_constraints();
     loghyper_changed = true;
   }
   
@@ -47,8 +48,19 @@ namespace libgp
   {
 	  if(isConstrained) {
 		  for( size_t i=0; i<this->loghyper.size(); ++i ) {
-			  loghyper[i] = loghyper[i] > loghyperUpperConstraint[i] ? loghyperUpperConstraint[i] : loghyper[i];
-			  loghyper[i] = loghyper[i] < loghyperLowerConstraint[i] ? loghyperLowerConstraint[i] : loghyper[i];
+			  if(loghyper[i] > loghyperUpperConstraint[i]) {
+				  //std::cout << loghyper[i] << " ";
+				  loghyper[i] = loghyperUpperConstraint[i];
+				  //std::cout << "check_constraints --> setting loghyperUpperConstraint at " << i << " to " << loghyper[i] << std::endl;
+			  }
+			  if(loghyper[i] < loghyperLowerConstraint[i]) {
+				  //std::cout << loghyper[i] << " ";
+				  loghyper[i] = loghyperLowerConstraint[i];
+				  //std::cout << "check_constraints --> setting loghyperLowerConstraint at " << i << " to " << loghyper[i] << std::endl;
+			  }
+				  
+			  //loghyper[i] = loghyper[i] > loghyperUpperConstraint[i] ? loghyperUpperConstraint[i] : loghyper[i];
+			  //loghyper[i] = loghyper[i] < loghyperLowerConstraint[i] ? loghyperLowerConstraint[i] : loghyper[i];
 		  }  
 	  }
 	  

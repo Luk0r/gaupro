@@ -36,6 +36,7 @@ class GP(object):
 
     def __init__(self,ndim,covf):
         #print("__init__(self,ndim,covf):")
+        print('gaupro v0.1')
         self.libgp = ctypes.cdll.LoadLibrary('libgaupro.so')
 
         self.new = self.libgp.gp_new

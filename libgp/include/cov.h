@@ -66,6 +66,7 @@ namespace libgp
       /** Update parameter vector.
        *  @param p new parameter vector */
       virtual void set_loghyper(const double p[]);
+	  
 	  /**
 	   * set the constraints 
 	   * @param lower lower constraints
