@@ -35,6 +35,24 @@ namespace libgp
     Eigen::Map<const Eigen::VectorXd> p_vec_map(p, param_dim);
     set_loghyper(p_vec_map);
   }
+  
+  void CovarianceFunction::set_constraints(const double lower[], const double upper[])
+  {
+	  loghyperLowerConstraint = Eigen::Map<const Eigen::VectorXd>(lower, param_dim);
+	  loghyperUpperConstraint = Eigen::Map<const Eigen::VectorXd>(upper, param_dim);
+	  isConstrained = true;
+  }
+  
+  void CovarianceFunction::check_constraints()
+  {
+	  if(isConstrained) {
+		  for( size_t i=0; i<this->loghyper.size(); ++i ) {
+			  loghyper[i] = loghyper[i] > loghyperUpperConstraint[i] ? loghyperUpperConstraint[i] : loghyper[i];
+			  loghyper[i] = loghyper[i] < loghyperLowerConstraint[i] ? loghyperLowerConstraint[i] : loghyper[i];
+		  }  
+	  }
+	  
+  }
 
   
   Eigen::VectorXd CovarianceFunction::draw_random_sample(Eigen::MatrixXd &X)

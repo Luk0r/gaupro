@@ -38,6 +38,9 @@ namespace libgp
   void CovSEard::set_loghyper(const Eigen::VectorXd &p)
   {
     CovarianceFunction::set_loghyper(p);
+	
+	CovarianceFunction::check_constraints();
+	
     for(size_t i = 0; i < input_dim; ++i) ell(i) = exp(loghyper(i));
     sf2 = exp(2*loghyper(input_dim));
   }

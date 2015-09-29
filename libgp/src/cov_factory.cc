@@ -65,20 +65,24 @@ namespace libgp {
         pos++;
       }
     }
+    
     std::map<std::string , CovFactory::create_func_def>::iterator it = registry.find(func);
     if (it == registry.end()) {
       std::cerr << "fatal error while parsing covariance function: " << func << " not found" << std::endl;
       exit(0);
     } 
+    
     covf = registry.find(func)->second();
     if (left == right) {
       assert(covf->init(input_dim));
-    } else if (sep == 0) {
+    } 
+    else if (sep == 0) {
       size_t sep = arg.find_first_of('/');
       int filter = atoi(arg.substr(1,sep-1).c_str());
       std::string second = arg.substr(sep+1, arg.length() - sep - 2);
       assert(covf->init(input_dim, filter, create(1, second)));
-    } else {
+    } 
+    else {
       assert(covf->init(input_dim, 
             create(input_dim, arg.substr(1,sep-1)), 
             create(input_dim, arg.substr(sep+1, arg.length()-sep-2))));

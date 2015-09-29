@@ -66,6 +66,14 @@ namespace libgp
       /** Update parameter vector.
        *  @param p new parameter vector */
       virtual void set_loghyper(const double p[]);
+	  /**
+	   * set the constraints 
+	   * @param lower lower constraints
+	   * @param upper upper constraints */
+	  virtual void set_constraints(const double lower[], const double upper[]);
+	  
+	  /** Check constraint */
+	  virtual void check_constraints();
 
       /** Get number of parameters for this covariance function.
        *  @return parameter vector dimensionality */
@@ -98,6 +106,17 @@ namespace libgp
       /** Parameter vector containing the log hyperparameters of the covariance function.
        *  The number of necessary parameters is given in param_dim. */
       Eigen::VectorXd loghyper;
+	  
+	  /** are the loghyper constrained? */
+	  bool isConstrained = false; 
+	  
+	  /** lower Constraints for
+	   *  @param  loghyper */
+	  Eigen::VectorXd loghyperUpperConstraint;
+	  
+	  /** lower Constraints for
+	   *  @param  loghyper */
+	  Eigen::VectorXd loghyperLowerConstraint;
 
   };
 

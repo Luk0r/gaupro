@@ -19,11 +19,11 @@
 #include <Irpropplus.h>
 #include <Irpropminus.h>
 
-class Optimizer
+class Solver
 {
     
 public:
-    Optimizer(libgp::GaussianProcess& r_gp, size_t _maxIter = 100) : gp(r_gp), maxIter(_maxIter), p_solver(nullptr) {};
+    Solver(libgp::GaussianProcess& r_gp, size_t _maxIter = 100) : gp(r_gp), maxIter(_maxIter), p_solver(nullptr) {};
     
     void Bfgs();
     void Lbfgs();

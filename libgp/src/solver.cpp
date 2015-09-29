@@ -1,14 +1,14 @@
 #include "solver.hpp"
 
 
-void Optimizer::Bfgs()
+void Solver::Bfgs()
 {   
     p_solver.reset(new pwie::BfgsSolver);
     p_solver->settings.maxIter = maxIter;
     p_solver->solve(x, function_value, gradient_value); 
 }
 
-void Optimizer::Lbfgs()
+void Solver::Lbfgs()
 {
     p_solver.reset(new pwie::LbfgsSolver);
     p_solver->settings.maxIter = maxIter;
@@ -16,7 +16,7 @@ void Optimizer::Lbfgs()
 }
 
 
-void Optimizer::Lbfgsb()
+void Solver::Lbfgsb()
 {   
     p_solver.reset(new pwie::LbfgsbSolver);
     p_solver->settings.maxIter = maxIter;
@@ -24,42 +24,42 @@ void Optimizer::Lbfgsb()
 }
 
 
-void Optimizer::Gd()
+void Solver::Gd()
 {
     p_solver.reset(new pwie::GradientDescentSolver);
     p_solver->settings.maxIter = maxIter;
     p_solver->solve(x, function_value, gradient_value);
 }
 
-void Optimizer::Cg()
+void Solver::Cg()
 {   
     p_solver.reset(new pwie::ConjugateGradientSolver);
     p_solver->settings.maxIter = maxIter;
     p_solver->solve(x, function_value, gradient_value);
 }
 
-void Optimizer::Newton()
+void Solver::Newton()
 {   
     p_solver.reset(new pwie::NewtonDescentSolver);
     p_solver->settings.maxIter = maxIter;
     p_solver->solve(x, function_value, gradient_value);
 }
 
-void Optimizer::Rprop()
+void Solver::Rprop()
 {   
 	p_solver.reset(new pwie::RpropSolver);
 	p_solver->settings.maxIter = maxIter;
 	p_solver->solve(x, function_value, gradient_value);
 }
 
-void Optimizer::Irpropplus()
+void Solver::Irpropplus()
 {   
 	p_solver.reset(new pwie::IrpropplusSolver);
 	p_solver->settings.maxIter = maxIter;
 	p_solver->solve(x, function_value, gradient_value);
 }
 
-void Optimizer::Irpropminus()
+void Solver::Irpropminus()
 {   
 	p_solver.reset(new pwie::IrpropminusSolver);
 	p_solver->settings.maxIter = maxIter;
