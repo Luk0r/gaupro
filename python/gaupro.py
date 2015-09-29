@@ -10,7 +10,9 @@ import numpy as np
 
 
 class GP(object):
-    '''
+    '''Gaussian Process class (C interface)
+    
+    available covariance functions:
     cov functions:
     CovLinearard
     CovLinearone
@@ -27,6 +29,7 @@ class GP(object):
     CovProd
     InputDimFilter
     
+    use like:
     "CovSum ( CovSEiso, CovNoise)"
     
     '''
@@ -129,6 +132,30 @@ class GP(object):
                                        ctypes.c_int(loghyperparam.shape[0]))
         else:
             print("loghyperparam dims do not match (python)")
+            
+    def set_constraints(self, lowerConstraints, upperConstraints):
+        """setting the constraints for the hyperparameters.
+        dimensions need to match with the dims of the hyperparameters
+        
+        :param lowerConstraints: The lower constraint.
+        :param upperConstraints: The upper constraint.
+        
+        """
+        self.libgp.gp_get_loghyperparam_dim.restype = ctypes.c_int
+        self.libgp.gp_get_loghyperparam_dim.argtypes = [ctypes.c_void_p]
+        dim = self.libgp.gp_get_loghyperparam_dim(self.libgp_ptr)
+        if (len(lowerConstraints.shape) == 1 and lowerConstraints.shape[0] == dim):
+            if (len(upperConstraints.shape) == 1 and upperConstraints.shape[0] == dim):
+            #virtual void set_constraints(const double lower[], const double upper[]);
+                self.libgp.gp_set_loghyper_constraints( ctypes.c_void_p(self.libgp_ptr),
+                    lowerConstraints.ctypes.data_as(ctypes.POINTER(ctypes.c_double)),
+                    upperConstraints.ctypes.data_as(ctypes.POINTER(ctypes.c_double)),
+                    ctypes.c_int(lowerConstraints.shape[0]) )
+            else:
+                print('Error (python): upperConstraints.shape not matching hyperparams shape')
+        else:
+            print("Error (python): lowerConstraints.shape not matching hyperparams shape")
+
         
     def get_loghyper(self):
         self.libgp.gp_get_loghyper_len.restype = ctypes.c_int
