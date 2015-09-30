@@ -245,6 +245,12 @@ private:
 };
 
 
+void printSolvers(GaussianProcess* gp_ptr)
+{
+	Solvers solvers(gp_ptr, 1);
+	solvers.showSolvers();
+}
+
 double* gp_optimize(GaussianProcess* gp_ptr, char* optimizer_c, int iters, double eps_stop = 0.0)
 {
 	Solvers s(gp_ptr, iters);
