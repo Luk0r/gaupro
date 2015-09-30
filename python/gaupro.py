@@ -54,8 +54,16 @@ class GP(object):
         self.ndim = ndim
         self.covf = covf
        # print("__init__(self,ndim,covf):")
+        
+    def printSolvers(self):
+        """printing optimiezers to choose from
+        """
+        self.libgp.gp_printSolvers(ctypes.c_void_p(self.libgp_ptr))
 
     def train(self, x, y, optimizer="rprop", opti_iters=100, eps_stop=0.0):#optimizer="cg" or "rprop"
+        """choosable optimizers:
+        
+        """
         if x.shape[0] == y.shape[0]:
             self.libgp.gp_add_train(ctypes.c_void_p(self.libgp_ptr), x.ctypes.data_as(ctypes.POINTER(ctypes.c_double)),
                                     ctypes.c_int(len(x.shape)), x.ctypes.shape_as(ctypes.c_int),

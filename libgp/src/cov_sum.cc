@@ -28,7 +28,7 @@ namespace libgp
     param_dim = param_dim_first + param_dim_second;
     loghyper.resize(param_dim);
     loghyper.setZero();
-    std::cout <<"CovSum::init(...): loghyper.size() = "<<  loghyper.size() << std::endl;
+    //std::cout <<"CovSum::init(...): loghyper.size() = "<<  loghyper.size() << std::endl;
     return true;
   }
   

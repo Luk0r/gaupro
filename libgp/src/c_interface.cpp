@@ -47,9 +47,9 @@ void x_train(double* x, int dims, int* shape)
     //    cout << "i " << i << " " << shape[i] << endl;
     //}
     
-    cout << "1. " << x[0] << endl;
-    cout << "2. " << x[1] << endl;
-    cout << "3. " << x[2] << endl;
+    //cout << "1. " << x[0] << endl;
+    //cout << "2. " << x[1] << endl;
+    //cout << "3. " << x[2] << endl;
     // print 1., 2. and last element per line
     
 	/*
@@ -245,7 +245,7 @@ private:
 };
 
 
-void printSolvers(GaussianProcess* gp_ptr)
+void gp_printSolvers(GaussianProcess* gp_ptr)
 {
 	Solvers solvers(gp_ptr, 1);
 	solvers.showSolvers();
@@ -254,7 +254,7 @@ void printSolvers(GaussianProcess* gp_ptr)
 double* gp_optimize(GaussianProcess* gp_ptr, char* optimizer_c, int iters, double eps_stop = 0.0)
 {
 	Solvers s(gp_ptr, iters);
-	s.showSolvers();
+	//s.showSolvers();
 	
 	std::string optimizerString(optimizer_c);
 	std::transform(optimizerString.begin(), optimizerString.end(), optimizerString.begin(), ::tolower);
@@ -457,14 +457,14 @@ double* gp_predict_value(GaussianProcess* gp_ptr, const double* x, int ndim, int
 
 int gp_get_loghyper_len(GaussianProcess* gp_ptr)
 {
-    cout << "gp_get_loghyper_len(GaussianProcess* gp_ptr) 1" << endl;
-    Eigen::VectorXd loghyperparam = gp_ptr->covf().get_loghyper(); // core dump here
-    cout << "gp_get_loghyper_len(GaussianProcess* gp_ptr) 2" << endl;
-    cout << loghyperparam.size() << endl;
-    return loghyperparam.size();
+    //cout << "gp_get_loghyper_len(GaussianProcess* gp_ptr) 1" << endl;
+    //Eigen::VectorXd loghyperparam = gp_ptr->covf().get_loghyper(); // core dump here
+    //cout << "gp_get_loghyper_len(GaussianProcess* gp_ptr) 2" << endl;
+    //cout << loghyperparam.size() << endl;
+    //return loghyperparam.size();
     
     //original:
-    //return gp_ptr->covf().get_loghyper().size();
+    return gp_ptr->covf().get_loghyper().size();
 }
 
 
