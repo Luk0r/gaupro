@@ -11,6 +11,8 @@
 
 #include <utility> // pair
 #include <cmath> // for NAN
+#include <map>
+#include <functional>
 
 using std::cout;
 using std::endl;
@@ -22,16 +24,6 @@ using namespace libgp;
 
 extern "C"
 {
-    
-void test()
-{
-    cout << "Hello World!" << endl;
-}
-
-double add(double a, double b)
-{
-    return a+b;
-}
 
 void init(int dim, std::string covf)
 {
@@ -39,35 +31,35 @@ void init(int dim, std::string covf)
     
 }
 
-void get_array(double* arr, int len)
-{
-    for(int i=0; i<len;++i)
-    {
-        cout << arr[i] << endl;
-    }
-    arr[0] = 99.9;
-}
 
 void x_train(double* x, int dims, int* shape)
 {
     cout << "dims = " << dims << endl;
+	cout << "shape: "<< endl;
+	for( size_t i=0; i<dims; ++i){
+		cout  << shape[i] << " ";
+	}
+	cout << endl;
+	
     //cout << "dims: " << endl;
-    for(int i =0; i< dims; ++i)
-    {
-        cout << "i " << i << " " << shape[i] << endl;
-    }
+    //for(int i =0; i< dims; ++i)
+    //{
+    //    cout << "i " << i << " " << shape[i] << endl;
+    //}
     
-    cout << "1. " << x[0] << endl;
-    cout << "2. " << x[1] << endl;
-    cout << "3. " << x[2] << endl;
+    //cout << "1. " << x[0] << endl;
+    //cout << "2. " << x[1] << endl;
+    //cout << "3. " << x[2] << endl;
     // print 1., 2. and last element per line
     
+	/*
     int counter =0;
     for(int j=0; j<shape[0]*shape[1]; j+=368)
     {
         cout << counter << "   " << x[j] << " " << x[j+1] << " " << x[j+shape[1]-1] << endl;
         ++counter;
     }
+    */
     
     
     
@@ -82,9 +74,9 @@ GaussianProcess*  gp_new(unsigned int input_dim, char* covf)
     GaussianProcess* gp = new GaussianProcess(input_dim, string(covf)) ;
     if(gp != nullptr)
     {
-        cout << "gp = " << gp << endl;
-        cout << "gp = " << uint64_t(gp) << endl;
-        cout << "check" << endl;
+        //cout << "gp = " << gp << endl;
+        //cout << "gp = " << uint64_t(gp) << endl;
+        //cout << "check" << endl;
         //cout << "*gp = " << *gp << endl;
         return gp;
     }
@@ -162,8 +154,25 @@ class Solvers
 {
 
 public:
-	Solvers(GaussianProcess* gp_ptr, int iters) : optimizer(*gp_ptr, iters)
+	//std::map<std::string , pwie::ISolver> Solvers;
+	
+	
+	//CovFactory::CovFactory () {
+	//	registry["CovLinearard"] = & create_func<CovLinearard>;
+	Solvers(GaussianProcess* gp_ptr, int iters) : solver(*gp_ptr, iters)
 	{		
+		SolverRegister["irpropplus"] = [this]() {solver.Irpropplus();} ; 
+		SolverRegister["rprop"] = [this]() {solver.Rprop();} ;
+		SolverRegister["bfgs"] = [this]() {solver.Bfgs();} ;
+		SolverRegister["lbfgs"] = [this]() {solver.Lbfgs();} ;
+		SolverRegister["lbfgsb"] = [this]()  {solver.Lbfgsb();} ;
+		SolverRegister["cg"] = [this]() {solver.Cg();} ;
+		SolverRegister["gd"] = [this]() {solver.Gd();} ;
+	}
+		
+	/**
+	Solvers(GaussianProcess* gp_ptr, int iters) : optimizer(*gp_ptr, iters)
+	{
 		SolverStrings.push_back("rprop_old");
 		SolverStrings.push_back("irprop+_old");
 		SolverStrings.push_back("cg_old");
@@ -177,33 +186,40 @@ public:
 		SolverPairs.push_back(std::make_pair("lbfgsb", [this](){optimizer.Lbfgsb();} ));
 		SolverPairs.push_back(std::make_pair("cg", [this](){optimizer.Cg();} ));
 		SolverPairs.push_back(std::make_pair("gd", [this](){optimizer.Gd();} ));
-	}
+	} */
 	
 	void showSolvers()
 	{
 		std::cout << "available solvers are: " << std::endl;
-		std::cout << "-----------------------" << std::endl;
-		for(auto& s:SolverStrings)
-		{
-			std::cout << s << std::endl;
-		}
-		for(auto& s:SolverPairs)
+		std::cout << "-----------------------" << std::endl;	
+		for(auto& s:SolverRegister)
 		{
 			std::cout << s.first << std::endl;
 		}
 		std::cout << "-----------------------" << std::endl;
 	}
 	
-	Optimizer selectSolver(std::string s)
+	Solver selectSolver(std::string searchFor)
 	{
 		bool match = false;
 		
-		for(auto& t : SolverPairs)
+		auto found = this->SolverRegister.find(searchFor);
+		
+		if(found != SolverRegister.end()) {
+			found->second();
+			std::cout << "selected optimizer: "  << found->first << std::endl;
+		}
+		else {
+			std::cout << "no matching solver found, using default optimizer: iRprop+ (irpropplus)" << std::endl;
+			SolverRegister.find("irpropplus")->second();
+		}
+		/**
+		for(auto& t : SolverRegister)
 		{
 			if(t.first.compare(s) == 0)
 			{
 				std::cout << "selected optimizer: "  << t.first << std::endl;
-				t.second();
+				optimizer = t.second();
 				match = true;
 			}
 		}
@@ -211,27 +227,34 @@ public:
 		if(match == false)
 		{
 			std::cout << "no matching solver found, using default optimizer: iRprop+ (irpropplus)" << std::endl;
-			SolverPairs[0].second();
+			optimizer = Solvers["irpropplus"].second();
 		}
-		
-		
-		return optimizer;
+		*/
+		return solver;
 	}
 	
-	inline std::string at(size_t i) { return SolverStrings.at(i);}
+	//inline std::string at(size_t i) { return SolverStrings.at(i);}
 	
 		
 	
 private:
-	Optimizer optimizer;
+	Solver solver;
 	std::vector<std::string> SolverStrings;
-	std::vector<std::pair< std::string, std::function<void()> >> SolverPairs;
+	//std::vector<std::pair< std::string, std::function<void()> >> SolverPairs;
+	std::map<std::string , std::function<void()> > SolverRegister;
 };
+
+
+void gp_printSolvers(GaussianProcess* gp_ptr)
+{
+	Solvers solvers(gp_ptr, 1);
+	solvers.showSolvers();
+}
 
 double* gp_optimize(GaussianProcess* gp_ptr, char* optimizer_c, int iters, double eps_stop = 0.0)
 {
 	Solvers s(gp_ptr, iters);
-	s.showSolvers();
+	//s.showSolvers();
 	
 	std::string optimizerString(optimizer_c);
 	std::transform(optimizerString.begin(), optimizerString.end(), optimizerString.begin(), ::tolower);
@@ -434,14 +457,14 @@ double* gp_predict_value(GaussianProcess* gp_ptr, const double* x, int ndim, int
 
 int gp_get_loghyper_len(GaussianProcess* gp_ptr)
 {
-    cout << "gp_get_loghyper_len(GaussianProcess* gp_ptr) 1" << endl;
-    Eigen::VectorXd loghyperparam = gp_ptr->covf().get_loghyper(); // core dump here
-    cout << "gp_get_loghyper_len(GaussianProcess* gp_ptr) 2" << endl;
-    cout << loghyperparam.size() << endl;
-    return loghyperparam.size();
+    //cout << "gp_get_loghyper_len(GaussianProcess* gp_ptr) 1" << endl;
+    //Eigen::VectorXd loghyperparam = gp_ptr->covf().get_loghyper(); // core dump here
+    //cout << "gp_get_loghyper_len(GaussianProcess* gp_ptr) 2" << endl;
+    //cout << loghyperparam.size() << endl;
+    //return loghyperparam.size();
     
     //original:
-    //return gp_ptr->covf().get_loghyper().size();
+    return gp_ptr->covf().get_loghyper().size();
 }
 
 
@@ -501,6 +524,22 @@ void gp_set_loghyper(GaussianProcess* gp_ptr, double* loghyperparam, int len)
     {
         cout << "ERROR: dims of hyperparams do not match" << endl;
     }
+}
+
+void gp_set_loghyper_constraints(GaussianProcess* gp_ptr, double* lowerConstraints, double* upperConstraints, int len)
+{
+	//cout << "gp_ptr->covf().get_param_dim() = " << gp_ptr->covf().get_param_dim() << endl;
+	//cout << "len = " << len  << endl;
+	
+	cout << "setting constraints" << endl;
+	if(len == gp_ptr->covf().get_param_dim())
+	{
+		gp_ptr->covf().set_constraints(lowerConstraints, upperConstraints);
+	}
+	else
+	{
+		cout << "ERROR: dims of hyperparams do not match" << endl;
+	}
 }
 
 double gp_get_loglikelihood(GaussianProcess* gp_ptr)

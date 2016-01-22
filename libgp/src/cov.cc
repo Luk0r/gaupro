@@ -27,6 +27,7 @@ namespace libgp
   {
     assert(p.size() == loghyper.size());
     loghyper = p;
+	check_constraints();
     loghyper_changed = true;
   }
   
@@ -34,6 +35,35 @@ namespace libgp
   {
     Eigen::Map<const Eigen::VectorXd> p_vec_map(p, param_dim);
     set_loghyper(p_vec_map);
+  }
+  
+  void CovarianceFunction::set_constraints(const double lower[], const double upper[])
+  {
+	  loghyperLowerConstraint = Eigen::Map<const Eigen::VectorXd>(lower, param_dim);
+	  loghyperUpperConstraint = Eigen::Map<const Eigen::VectorXd>(upper, param_dim);
+	  isConstrained = true;
+  }
+  
+  void CovarianceFunction::check_constraints()
+  {
+	  if(isConstrained) {
+		  for( size_t i=0; i<this->loghyper.size(); ++i ) {
+			  if(loghyper[i] > loghyperUpperConstraint[i]) {
+				  //std::cout << loghyper[i] << " ";
+				  loghyper[i] = loghyperUpperConstraint[i];
+				  //std::cout << "check_constraints --> setting loghyperUpperConstraint at " << i << " to " << loghyper[i] << std::endl;
+			  }
+			  if(loghyper[i] < loghyperLowerConstraint[i]) {
+				  //std::cout << loghyper[i] << " ";
+				  loghyper[i] = loghyperLowerConstraint[i];
+				  //std::cout << "check_constraints --> setting loghyperLowerConstraint at " << i << " to " << loghyper[i] << std::endl;
+			  }
+				  
+			  //loghyper[i] = loghyper[i] > loghyperUpperConstraint[i] ? loghyperUpperConstraint[i] : loghyper[i];
+			  //loghyper[i] = loghyper[i] < loghyperLowerConstraint[i] ? loghyperLowerConstraint[i] : loghyper[i];
+		  }  
+	  }
+	  
   }
 
   
